@@ -1,6 +1,5 @@
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
-import Pages from "@/components/pages";
 import type { Metadata } from "next";
 import { Noto_Sans_Thai } from "next/font/google";
 import "./globals.css";
@@ -19,16 +18,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="th">
-      <head>
-        <link
-          rel="stylesheet"
-          href="//fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@100..900&display=swap"
-        />
-      </head>
       <body className={noto_sans_thai.className}>
         <main className="flex flex-col items-center min-h-screen text-white">
           <Navbar />
-          <Pages />
           {children}
           <Footer />
         </main>

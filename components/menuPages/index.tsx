@@ -1,11 +1,11 @@
 import { Button, Flex } from "antd";
 
-const Pages = () => {
+const MenuPages = () => {
   return (
     <Flex gap={8}>
-      <Button className="text-black" href="/">
+      {/* <Button className="text-black" href="/">
         สั่งอาหาร
-      </Button>
+      </Button> */}
       <Button className="text-black" href="/history">
         ประวัติการสั่ง
       </Button>
@@ -13,4 +13,4 @@ const Pages = () => {
   );
 };
 
-export default Pages;
+export default MenuPages;

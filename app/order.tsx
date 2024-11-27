@@ -6,50 +6,50 @@ import { Button, Modal, Spin } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Menu from "./menu";
-
-export interface Cart {
-  menu: number;
-  qty: number;
-}
+import MenuSection from "./menu";
+import { CartItem, MenuItem } from "@/interface";
 
 export default function Order() {
   const router = useRouter();
   const dispatch = useDispatch();
   const orders = useSelector((state: RootState) => state.globalState.orders);
 
-  const [carts, setCarts] = useState<Cart[]>([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
   const [showSpinner, setShowSpinner] = useState(false);
   const [showOrderSuccess, setShowOrderSuccess] = useState(false);
+  const [menu, setMenu] = useState<MenuItem[]>([]);
 
   const handlePlusItem = (menuIndex: number) => {
-    const cartItem = carts.find((cart) => cart.menu === menuIndex);
+    const cartItem = cart.find((item) => item.menu_id === menuIndex);
     if (cartItem) {
-      setCarts((prevCarts) =>
-        prevCarts.map((cart) =>
-          cart.menu === menuIndex ? { ...cart, qty: cart.qty + 1 } : cart
+      setCart((prevCarts) =>
+        prevCarts.map((item) =>
+          item.menu_id === menuIndex
+            ? { ...item, qty: Math.min(item.qty + 1, 10) }
+            : item
         )
       );
     } else {
-      setCarts((prevCarts) => [...prevCarts, { menu: menuIndex, qty: 1 }]);
+      setCart((prevCarts) => [...prevCarts, { menu_id: menuIndex, qty: 1 }]);
     }
   };
 
   const handleMinusItem = (menuIndex: number) => {
-    const cartItem = carts.find((cart) => cart.menu === menuIndex);
+    const cartItem = cart.find((item) => item.menu_id === menuIndex);
     if (cartItem) {
-      setCarts((prevCarts) =>
-        prevCarts.map((cart) =>
-          cart.menu === menuIndex
-            ? { ...cart, qty: Math.max(cart.qty - 1, 0) }
-            : cart
-        )
+      setCart(
+        (prevCarts) =>
+          prevCarts
+            .map((item) =>
+              item.menu_id === menuIndex ? { ...item, qty: item.qty - 1 } : item
+            )
+            .filter((item) => item.qty > 0) // Remove items with qty <= 0
       );
     }
   };
 
   const handleOrder = () => {
-    dispatch(setOrders([...orders, carts]));
+    dispatch(setOrders([...orders, cart]));
     setShowSpinner(true);
     setTimeout(() => {
       setShowSpinner(false);
@@ -61,16 +61,39 @@ export default function Order() {
     }, 1500);
   };
 
+  const handleLoadMenu = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_HOST}/menu`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch menus: ${response.statusText}`);
+      }
+
+      const menus = await response.json();
+      setMenu(menus?.data);
+      console.log(menus);
+    } catch (error) {
+      console.error("Error loading menus:", error);
+    }
+  };
+
   useEffect(() => {
-    console.log(carts);
-  }, [carts]);
+    handleLoadMenu();
+  }, []);
+
+  useEffect(() => {
+    console.log(cart);
+  }, [cart]);
 
   return (
     <main className="flex flex-col items-center min-h-screen text-white">
-      <Menu
-        carts={carts}
-        plusItem={(menuIndex) => handlePlusItem(menuIndex)}
-        minusItem={(menuIndex) => handleMinusItem(menuIndex)}
+      <MenuSection
+        menus={menu}
+        cart={cart}
+        plusItem={(menuIndex: number) => handlePlusItem(menuIndex)}
+        minusItem={(menuIndex: number) => handleMinusItem(menuIndex)}
       />
       <Button onClick={handleOrder}>สั่งอาหาร</Button>
       <Modal open={showOrderSuccess} closable={false} footer={null} centered>

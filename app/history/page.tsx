@@ -1,9 +1,10 @@
 "use client";
 import { RootState } from "@/redux/store/reducers";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const History: React.FC = () => {
   const orders = useSelector((state: RootState) => state.globalState.orders);
+  const dispatch = useDispatch();
 
   return (
     <div className="flex flex-col p-4">
