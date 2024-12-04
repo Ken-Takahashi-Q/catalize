@@ -1,7 +1,7 @@
 // next.config.mjs
 const config = {
   images: {
-    domains: ["sushiro.co.th"],
+    remotePatterns: [{ protocol: "https", hostname: "sushiro.co.th" }],
   },
 };
 

@@ -3,6 +3,7 @@ import Navbar from "@/components/navbar";
 import type { Metadata } from "next";
 import { Noto_Sans_Thai } from "next/font/google";
 import "./globals.css";
+import AppWrapper from "./appWrapper";
 
 const noto_sans_thai = Noto_Sans_Thai({ subsets: ["latin"] });
 
@@ -19,11 +20,13 @@ export default function RootLayout({
   return (
     <html lang="th">
       <body className={noto_sans_thai.className}>
-        <main className="flex flex-col items-center min-h-screen text-white">
-          <Navbar />
-          {children}
-          <Footer />
-        </main>
+        <AppWrapper>
+          <main className="flex flex-col items-center text-white min-h-screen">
+            <Navbar />
+            {children}
+            <Footer />
+          </main>
+        </AppWrapper>
       </body>
     </html>
   );

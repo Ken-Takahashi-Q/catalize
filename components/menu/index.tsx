@@ -47,10 +47,11 @@ const MenuCard: React.FC<MenuCardProps> = ({
           />
         </Flex>
       </div>
-      <Flex gap={8} className="items-center p-2 h-fit">
+      <Flex className="flex justify-between items-center p-2 h-fit">
         <h1 className="overflow-hidden text-ellipsis whitespace-nowrap">
           {menu.menu_name_th}
         </h1>
+        {menu.price}.-
       </Flex>
     </div>
   );
